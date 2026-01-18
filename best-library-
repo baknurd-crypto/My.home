@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>My-Library — читать книги онлайн</title>
+
+<meta name="description" content="Читать книги онлайн бесплатно. My-Library — библиотека с поиском по авторам и названиям.">
+<meta name="keywords" content="читать книги онлайн, библиотека, дневник памяти читать">
+
+<style>
+body{
+font-family:Arial;
+background:#111;
+color:white;
+margin:0;
+padding:0;
+}
+
+header{
+background:#000;
+padding:15px;
+text-align:center;
+font-size:22px;
+font-weight:bold;
+}
+
+input{
+width:90%;
+padding:12px;
+font-size:16px;
+margin:15px auto;
+display:block;
+border-radius:8px;
+border:none;
+}
+
+#results{
+padding:10px;
+}
+
+.book{
+background:#222;
+margin:10px 0;
+padding:10px;
+border-radius:8px;
+cursor:pointer;
+}
+
+.book:hover{
+background:#333;
+}
+
+#reader{
+width:100%;
+height:85vh;
+display:none;
+}
+
+iframe{
+width:100%;
+height:100%;
+border:none;
+}
+</style>
+</head>
+
+<body>
+
+<header>📚 My-Library</header>
+
+<input id="search" placeholder="Поиск книги или автора...">
+
+<div id="results"></div>
+
+<div id="reader"></div>
+
+<script>
+// БАЗА КНИГ
+const books = [
+ {
+  title:"Дневник памяти",
+  author:"Николас Спаркс",
+  file:"books/dnevnik-pamyati.pdf",
+  description:"Роман о любви"
+ },
+ {
+  title:"Alice in Wonderland",
+  author:"Lewis Carroll",
+  file:"books/alice.pdf",
+  description:"Fantasy classic"
+ },
+ {
+  title:"Frankenstein",
+  author:"Mary Shelley",
+  file:"books/frankenstein.pdf",
+  description:"Classic novel"
+ }
+];
+
+// ПОКАЗ ВСЕХ КНИГ
+showBooks(books);
+
+// ПОИСК
+document.getElementById("search").oninput = function(){
+ const q = this.value.toLowerCase();
+ const filtered = books.filter(b =>
+   b.title.toLowerCase().includes(q) ||
+   b.author.toLowerCase().includes(q)
+ );
+ showBooks(filtered);
+}
+
+// ВЫВОД
+function showBooks(list){
+ document.getElementById("results").innerHTML =
+ list.map(b=>`
+   <div class="book" onclick="openBook('${b.file}','${b.title}','${b.author}')">
+    <b>${b.title}</b><br>
+    <small>${b.author}</small>
+   </div>
+ `).join("") || "<p>Ничего не найдено</p>";
+}
+
+// ЧТЕНИЕ
+function openBook(file,title,author){
+ document.title = title+" — "+author+" читать онлайн";
+ document.querySelector("meta[name='description']").content =
+ "Читать книгу "+title+" автора "+author+" онлайн бесплатно";
+
+ document.getElementById("reader").style.display="block";
+ document.getElementById("reader").innerHTML=
+ `<iframe src="${file}"></iframe>`;
+ window.scrollTo(0,document.body.scrollHeight);
+}
+</script>
+
+</body>
+</html>
